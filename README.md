@@ -14,15 +14,17 @@ pandas: Used for reading and handling the CSV file with image labels.
 
 ## Repository structure:
 
+```
+.
 ├── data/
 ├── results/
 │   └── (Where trained models and charts will be saved)
-├── .gitignore
 ├── notebooks/
-│   └── Template.ipynb
-│   └── EDA_manhole.ipynb
-│   └── (Where notebook to train models and charts will be saved)
-├── README.md
-├── LICENSE
+│   ├── Template.ipynb         (A starting point for new experiments)
+│   └── EDA_manhole.ipynb      (Notebook for exploratory data analysis)
+├── .gitignore               (Files and folders to be ignored by Git)
+├── README.md                (The main project overview)
+└── LICENSE                  (The license for this project)
+```
 
 
