@@ -1,0 +1,17 @@
+.git
+.gitignore
+.codex
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.ipynb
+
+notebooks/
+data/
+results/
+tests/
+
+.venv/
+venv/
+.env
