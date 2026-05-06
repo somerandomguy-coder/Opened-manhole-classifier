@@ -11,7 +11,7 @@ This repository is now deployment-ready and inference-only.
 It serves a fine-tuned EfficientNet-B0 model with:
 
 - `POST /predict` JSON inference API
-- `GET /` browser upload demo UI
+- `GET /` visual browser inference showcase UI
 - Optional WSOL output (Grad-CAM bounding box)
 
 ## Label Mapping
@@ -27,6 +27,7 @@ Binary output mapping is locked as:
 - `app/preprocess.py`: notebook-matching preprocessing (`224x224`, normalize mean/std `0.5`)
 - `app/inference.py`: prediction logic + optional Grad-CAM WSOL bbox
 - `app/main.py`: FastAPI app (`/`, `/health`, `/predict`)
+- `app/static/`: frontend assets (`index.html`, `styles.css`, `app.js`)
 
 Legacy notebooks are preserved at `notebooks/legacy/` and are excluded from runtime flow.
 
@@ -62,6 +63,16 @@ Then open:
 - Health: `http://localhost:7860/health`
 
 If `/health` returns `"model_loaded": false`, the model file path is likely wrong.
+
+## UI Demo Flow
+
+1. Open `http://localhost:7860/`.
+2. Upload an image file (`jpg`, `jpeg`, or `png`; `webp` can be selected in UI preview but API validation is JPG/PNG).
+3. Adjust `Decision threshold` if needed.
+4. Optionally enable `Show WSOL / Grad-CAM bbox` and tune `CAM threshold`.
+5. Click `Predict` and wait for inference.
+6. Review label, confidence, safe/danger probabilities, and threshold.
+7. Open `Raw response` only for debugging details.
 
 ### 3. Example API calls
 
@@ -133,6 +144,8 @@ Response:
 
 When `include_wsol=false`, `wsol` is `null`.
 
+When `include_wsol=true`, `wsol.bbox` may be `null` if no CAM region passes the selected CAM threshold.
+
 Error responses use a structured format:
 
 ```json
@@ -203,3 +216,22 @@ Test coverage includes:
 - label mapping behavior
 - CAM bbox fallback with no contour
 - API health/predict/error behavior
+- root route HTML frontend serving
+- WSOL bbox-present and bbox-null API cases
+
+## Manual UI Acceptance Checklist
+
+1. Selecting an image immediately shows preview and file metadata.
+2. Predict button disables and shows loading text during inference.
+3. Non-WSOL prediction shows label, confidence, probabilities, threshold, and image.
+4. WSOL prediction shows canvas overlay with bbox when bbox is returned.
+5. WSOL with null bbox shows a clear threshold guidance message.
+6. Raw JSON remains available only in collapsed `<details>`.
+7. UI behavior is valid in both mock mode and real model mode.
+8. Layout remains readable on mobile-width screens.
+
+## Showcase References
+
+- Suggested screenshots directory: `docs/screenshots/` (for upload preview, non-WSOL result, WSOL overlay, and mobile view captures).
+- Model metrics reference location: `results/README.md` (add the latest exported evaluation summary used for demos).
+- Deployment hardening note: dependency versions are pinned in `requirements.txt`; review and refresh pins before each release cut.

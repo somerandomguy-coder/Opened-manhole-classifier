@@ -61,16 +61,9 @@ def load_model(model_path: str | Path, device: torch.device) -> MyModel:
         raise FileNotFoundError(f"Model file not found: {path}")
 
     model = MyModel()
-    checkpoint = torch.load(path, map_location=device, weights_only=False)
+    checkpoint = torch.load(path, map_location=device, weights_only=True)
     state_dict = _strip_module_prefix(_extract_state_dict(checkpoint))
-    missing, unexpected = model.load_state_dict(state_dict, strict=False)
-
-    if missing or unexpected:
-        raise RuntimeError(
-            "Checkpoint does not match model architecture. "
-            f"Missing keys: {missing[:5]}{'...' if len(missing) > 5 else ''}; "
-            f"Unexpected keys: {unexpected[:5]}{'...' if len(unexpected) > 5 else ''}"
-        )
+    model.load_state_dict(state_dict, strict=True)
 
     model.to(device)
     model.eval()

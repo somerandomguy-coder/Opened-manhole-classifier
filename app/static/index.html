@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Opened Manhole Classifier</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero card">
+        <p class="eyebrow">Model Demo</p>
+        <h1>Opened Manhole Classifier</h1>
+        <p>Upload an image to classify whether the scene is safe or dangerous.</p>
+      </header>
+
+      <form id="predictForm" class="card form-card">
+        <label class="file-input-label" for="imageInput">Image file</label>
+        <input
+          id="imageInput"
+          name="file"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          required
+        />
+
+        <div class="inline-fields">
+          <label>
+            Decision threshold
+            <input id="thresholdInput" name="threshold" type="number" min="0" max="1" step="0.01" value="0.5" />
+          </label>
+
+          <label id="camThresholdGroup" hidden>
+            CAM threshold
+            <input
+              id="camThresholdInput"
+              name="cam_threshold"
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.05"
+            />
+          </label>
+        </div>
+
+        <label class="checkbox-row">
+          <input id="wsolInput" name="include_wsol" type="checkbox" />
+          <span>Show WSOL / Grad-CAM bbox</span>
+        </label>
+
+        <button id="predictButton" type="submit">Predict</button>
+      </form>
+
+      <section id="previewPanel" class="card" hidden>
+        <h2>Uploaded image</h2>
+        <img id="previewImage" alt="Uploaded preview" />
+        <p id="fileMeta"></p>
+      </section>
+
+      <section id="resultPanel" class="card" hidden>
+        <div id="resultBadge"></div>
+        <div id="resultStats" class="result-stats"></div>
+
+        <div id="plainImagePanel">
+          <img id="resultImage" alt="Prediction result image" />
+        </div>
+
+        <div id="wsolPanel" hidden>
+          <canvas id="resultCanvas"></canvas>
+          <p id="wsolMessage"></p>
+        </div>
+
+        <details>
+          <summary>Raw response</summary>
+          <pre id="rawJson"></pre>
+        </details>
+      </section>
+
+      <div id="errorPanel" class="card error" hidden></div>
+    </main>
+  </body>
+</html>

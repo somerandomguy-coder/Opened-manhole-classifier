@@ -8,6 +8,7 @@ from typing import Any
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image, UnidentifiedImageError
 
 from app.schemas import ErrorResponse, HealthResponse, PredictResponse
@@ -18,6 +19,7 @@ MAX_IMAGE_BYTES = int(os.getenv("MAX_IMAGE_BYTES", str(8 * 1024 * 1024)))
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/jpg", "image/png"}
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 USE_MOCK_PREDICTOR = os.getenv("USE_MOCK_PREDICTOR", "0") == "1"
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 class MockPredictor:
@@ -200,6 +202,7 @@ app = FastAPI(
 )
 app.state.predictor = None
 app.state.model_error = None
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 @app.on_event("startup")
@@ -236,90 +239,8 @@ async def validation_exception_handler(_: Request, exc: RequestValidationError) 
 
 
 @app.get("/", response_class=HTMLResponse)
-async def root() -> str:
-    return """
-<!doctype html>
-<html lang=\"en\">
-  <head>
-    <meta charset=\"utf-8\" />
-    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-    <title>Opened Manhole Classifier Demo</title>
-    <style>
-      body { font-family: sans-serif; margin: 2rem auto; max-width: 760px; line-height: 1.4; }
-      .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; }
-      .row { margin-bottom: 0.8rem; }
-      label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
-      input[type=\"number\"] { width: 120px; }
-      button { padding: 0.6rem 1rem; cursor: pointer; }
-      pre { background: #111; color: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-      .hint { color: #666; font-size: 0.9rem; }
-    </style>
-  </head>
-  <body>
-    <h1>Opened Manhole Classifier</h1>
-    <p>Upload a JPG/PNG image for class prediction. Toggle WSOL to include Grad-CAM bounding box output.</p>
-    <div class=\"card\">
-      <form id=\"predict-form\">
-        <div class=\"row\">
-          <label for=\"image\">Image</label>
-          <input id=\"image\" name=\"file\" type=\"file\" accept=\"image/jpeg,image/png\" required />
-        </div>
-
-        <div class=\"row\">
-          <label for=\"threshold\">Threshold (0-1)</label>
-          <input id=\"threshold\" name=\"threshold\" type=\"number\" min=\"0\" max=\"1\" step=\"0.01\" value=\"0.5\" />
-        </div>
-
-        <div class=\"row\">
-          <label for=\"cam_threshold\">CAM Threshold (0-1)</label>
-          <input id=\"cam_threshold\" name=\"cam_threshold\" type=\"number\" min=\"0\" max=\"1\" step=\"0.01\" value=\"0.05\" />
-        </div>
-
-        <div class=\"row\">
-          <label>
-            <input id=\"include_wsol\" name=\"include_wsol\" type=\"checkbox\" value=\"true\" />
-            Include WSOL bounding box (Grad-CAM)
-          </label>
-          <div class=\"hint\">WSOL is slower on CPU.</div>
-        </div>
-
-        <button type=\"submit\">Predict</button>
-      </form>
-    </div>
-
-    <h2>Response</h2>
-    <pre id=\"output\">Submit an image to see prediction JSON.</pre>
-
-    <script>
-      const form = document.getElementById('predict-form');
-      const output = document.getElementById('output');
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const formData = new FormData(form);
-        const include = document.getElementById('include_wsol').checked;
-        if (!include) {
-          formData.set('include_wsol', 'false');
-        }
-
-        output.textContent = 'Running inference...';
-
-        try {
-          const response = await fetch('/predict', {
-            method: 'POST',
-            body: formData,
-          });
-
-          const data = await response.json();
-          output.textContent = JSON.stringify(data, null, 2);
-        } catch (error) {
-          output.textContent = JSON.stringify({ error: String(error) }, null, 2);
-        }
-      });
-    </script>
-  </body>
-</html>
-"""
+async def root() -> HTMLResponse:
+    return HTMLResponse((STATIC_DIR / "index.html").read_text(encoding="utf-8"))
 
 
 @app.get(

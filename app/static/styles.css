@@ -1,0 +1,238 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg-0: #f6f8fb;
+  --bg-1: #ffffff;
+  --ink-0: #101828;
+  --ink-1: #475467;
+  --line: #d0d5dd;
+  --safe: #067647;
+  --safe-bg: #ecfdf3;
+  --danger: #b42318;
+  --danger-bg: #fef3f2;
+  --accent: #0b4a6f;
+  --accent-2: #1d7cb5;
+  --shadow: 0 14px 36px rgba(16, 24, 40, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink-0);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(29, 124, 181, 0.18), transparent 32%),
+    radial-gradient(circle at 92% 18%, rgba(6, 118, 71, 0.15), transparent 36%),
+    linear-gradient(180deg, #eef3f8 0%, var(--bg-0) 55%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.page {
+  width: min(980px, calc(100% - 2rem));
+  margin: 2rem auto 2.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  padding: 1.35rem 1.35rem 1.15rem;
+}
+
+.hero h1 {
+  margin: 0.05rem 0 0.4rem;
+  font-size: clamp(1.6rem, 2vw + 1.1rem, 2.3rem);
+  letter-spacing: -0.03em;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--ink-1);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.form-card {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.file-input-label {
+  font-weight: 700;
+}
+
+input[type="file"],
+input[type="number"] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.6rem 0.7rem;
+  font: inherit;
+  background: #fff;
+}
+
+.inline-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: #fff;
+  padding: 0.72rem 1rem;
+  font: 700 1rem/1 "Manrope", "Avenir Next", sans-serif;
+  cursor: pointer;
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+
+button:hover:enabled {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+#previewImage,
+#resultImage,
+#resultCanvas {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #d8dee8;
+  background: #f8fafc;
+}
+
+#fileMeta,
+#wsolMessage {
+  margin: 0.65rem 0 0;
+  color: var(--ink-1);
+  font-size: 0.94rem;
+}
+
+#resultBadge {
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.42rem 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.75rem;
+}
+
+#resultBadge.safe {
+  background: var(--safe-bg);
+  color: var(--safe);
+  border: 1px solid #9ee7c5;
+}
+
+#resultBadge.dangerous {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid #fdb0aa;
+}
+
+.result-stats {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.result-stats div {
+  color: var(--ink-1);
+}
+
+.result-stats strong {
+  color: var(--ink-0);
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 500;
+}
+
+details {
+  margin-top: 1rem;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.75rem;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+pre {
+  margin: 0.65rem 0 0;
+  border-radius: 12px;
+  border: 1px solid #2f3748;
+  background: #0d1220;
+  color: #d4deff;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  padding: 0.8rem;
+  overflow-x: auto;
+}
+
+.error {
+  border-color: #fda29b;
+  background: #fef3f2;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .page {
+    width: min(980px, calc(100% - 1rem));
+    margin: 1rem auto 1.5rem;
+  }
+
+  .card {
+    border-radius: 14px;
+    padding: 0.9rem;
+  }
+
+  .inline-fields {
+    grid-template-columns: 1fr;
+  }
+}
